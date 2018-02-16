@@ -1,12 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.awt.event.*;
+import java.text.*;
+import java.util.*;
 
-public class TextChatMultiBase {
+public class TCMB {
     //Attributes
     private JFrame frame = new JFrame();
     private JTextField textInput;
@@ -33,7 +31,7 @@ public class TextChatMultiBase {
     };
 
     //Constructor
-    public TextChatMultiBase() {
+    public TCMB() {
         frame.add(panel);
         frame.setLayout(new GridBagLayout());
 
@@ -69,5 +67,9 @@ public class TextChatMultiBase {
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        TextChatBase tcb = new TextChatBase();
     }
 }
