@@ -54,16 +54,16 @@ public class MazeGame {
     private KeyListener kl = new KeyListener() {
         @Override
         public void keyTyped(KeyEvent e) {
-            if (e.getKeyChar() == KeyEvent.VK_W) {
+            if (e.getKeyChar() == KeyEvent.VK_W && !grid.getGrid()[player.getY()][player.getX()].getWallUp()) {
                 player.setY(player.getY()-1);
             }
-            else if (e.getKeyChar() == KeyEvent.VK_D) {
+            else if (e.getKeyChar() == KeyEvent.VK_D && !grid.getGrid()[player.getY()][player.getX()].getWallRight()) {
                 player.setX(player.getX()+1);
             }
-            if (e.getKeyChar() == KeyEvent.VK_S) {
+            if (e.getKeyChar() == KeyEvent.VK_S && !grid.getGrid()[player.getY()][player.getX()].getWallDown()) {
                 player.setY(player.getY()+1);
             }
-            if (e.getKeyChar() == KeyEvent.VK_A) {
+            if (e.getKeyChar() == KeyEvent.VK_A && !grid.getGrid()[player.getY()][player.getX()].getWallLeft()) {
                 player.setX(player.getX()-1);
             }
 
@@ -86,6 +86,10 @@ public class MazeGame {
         frame.setSize(width+xBuffer, height+yBuffer);
         cellPxSizeX = width/cellsX;
         cellPxSizeY = height/cellsY;
+
+        grid.removeBottomWall(0, 0);
+        grid.removeBottomWall(1, 0);
+        grid.removeRightWall(0, 0);
 
         //Graphics setup
         frame.add(panel);
