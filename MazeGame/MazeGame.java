@@ -5,8 +5,8 @@ import java.awt.event.KeyListener;
 
 public class MazeGame {
     //Variables that can scale game
-    int width = 1440;
-    int height = 900;
+    int width = 1280;
+    int height = 800;
     int cellsX = 8;
     int cellsY = 5;
 
@@ -66,19 +66,9 @@ public class MazeGame {
             if (e.getKeyChar() == KeyEvent.VK_A && !grid.getGrid()[player.getY()][player.getX()].getWallLeft()) {
                 player.setX(player.getX()-1);
             }
-
             panel.repaint();
         }
-        @Override
-        public void keyPressed(KeyEvent e) {
-            // TODO Auto-generated method stub
-        }
-        @Override
-        public void keyReleased(KeyEvent e) {
-            // TODO Auto-generated method stub
-        }
-
-
+        @Override public void keyPressed(KeyEvent e) {} @Override public void keyReleased(KeyEvent e) {}
     };
 
     public MazeGame(){
@@ -86,10 +76,7 @@ public class MazeGame {
         frame.setSize(width+xBuffer, height+yBuffer);
         cellPxSizeX = width/cellsX;
         cellPxSizeY = height/cellsY;
-
-        grid.removeBottomWall(0, 0);
-        grid.removeBottomWall(1, 0);
-        grid.removeRightWall(0, 0);
+        grid.setup();
 
         //Graphics setup
         frame.add(panel);
