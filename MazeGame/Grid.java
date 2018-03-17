@@ -16,10 +16,21 @@ public class Grid {
         }
     }
 
-    //Generate the maze randomly
-    public void primRandomize(){
-        MazeGeneration mg = new MazeGeneration();
-        grid = mg.prims(grid);
+    //Index getter
+    public int[] getIndex(Cell c){
+        int[] index = new int[2];
+        for(int i = 0; i < height; i++){
+            for(int k = 0; k < width; k++){
+                if(c.equals(grid[i][k])){
+                    index[0] = i;
+                    index[1] = k;
+                    return(index);
+                }
+            }
+        }
+        System.out.println("Invalid object!");
+        System.exit(-1);
+        return(index);
     }
 
     //Getters
@@ -33,25 +44,8 @@ public class Grid {
         return(grid);
     }
 
-    //Setters (kinda)
-    public void removeRightWall(int x, int y){
-        grid[y][x].wallRightRemove();
-        grid[y][x+1].wallLeftRemove();
-    }
-    public void removeLeftWall(int x, int y){
-        grid[y][x].wallLeftRemove();
-        grid[y][x-1].wallRightRemove();
-    }
-    public void removeTopWall(int x, int y){
-        grid[y][x].wallUpRemove();
-        grid[y-1][x].wallDownRemove();
-    }
-    public void removeBottomWall(int x, int y){
-        grid[y][x].wallDownRemove();
-        grid[y+1][x].wallUpRemove();
-    }
-
     //Hardcode setup
+    /**
     public void setup(){
         //Sample maze
         //Never do this ***NEVER***
@@ -95,4 +89,5 @@ public class Grid {
         removeLeftWall(4, 4);
         removeLeftWall(3, 4);
     }
+     **/
 }

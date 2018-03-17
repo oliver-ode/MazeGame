@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 
 public class MazeGame {
     //Variables that can scale game
+    //It is recommended that width/cellsX == height/cellsY
     int width = 1280;
     int height = 800;
     int cellsX = 8;
@@ -16,6 +17,9 @@ public class MazeGame {
     int cellPxSizeX;
     int cellPxSizeY;
     Player player = new Player();
+    MazeGeneration mazeGeneration = new MazeGeneration();
+
+    //Random maze generation
     Grid grid = new Grid(cellsX, cellsY);
     private JFrame frame = new JFrame();
     private JPanel panel = new JPanel(){
@@ -57,7 +61,7 @@ public class MazeGame {
             if (e.getKeyChar() == KeyEvent.VK_W && !grid.getGrid()[player.getY()][player.getX()].getWallUp()) {
                 player.setY(player.getY()-1);
             }
-            else if (e.getKeyChar() == KeyEvent.VK_D && !grid.getGrid()[player.getY()][player.getX()].getWallRight()) {
+            if (e.getKeyChar() == KeyEvent.VK_D && !grid.getGrid()[player.getY()][player.getX()].getWallRight()) {
                 player.setX(player.getX()+1);
             }
             if (e.getKeyChar() == KeyEvent.VK_S && !grid.getGrid()[player.getY()][player.getX()].getWallDown()) {
@@ -66,17 +70,39 @@ public class MazeGame {
             if (e.getKeyChar() == KeyEvent.VK_A && !grid.getGrid()[player.getY()][player.getX()].getWallLeft()) {
                 player.setX(player.getX()-1);
             }
+            //TODO OVERRIDE CONTROLS
+            if (e.getKeyChar() == KeyEvent.VK_I){
+                player.setY(player.getY()-1);
+            }
+            if (e.getKeyChar() == KeyEvent.VK_L){
+                player.setX(player.getX()+1);
+            }
+            if (e.getKeyChar() == KeyEvent.VK_K){
+                player.setY(player.getY()+1);
+            }
+            if (e.getKeyChar() == KeyEvent.VK_J){
+                player.setX(player.getX()-1);
+            }
+            if (e.getKeyChar() == KeyEvent.VK_SPACE){
+                System.out.println("Is a wall up? " + grid.getGrid()[player.getY()][player.getX()].getWallUp());
+                System.out.println("Is a wall down? " + grid.getGrid()[player.getY()][player.getX()].getWallDown());
+                System.out.println("Is a wall left? " + grid.getGrid()[player.getY()][player.getX()].getWallLeft());
+                System.out.println("Is a wall right? " + grid.getGrid()[player.getY()][player.getX()].getWallRight());
+            }
             panel.repaint();
+            if(player.getX() == grid.getWidth()-1 && player.getY() == grid.getHeight()-1){
+                System.out.println("You win!");
+                System.exit(0);
+            }
         }
         @Override public void keyPressed(KeyEvent e) {} @Override public void keyReleased(KeyEvent e) {}
     };
 
-    public MazeGame(){
+    public MazeGame() {
         //Grid and cell setup
         frame.setSize(width+xBuffer, height+yBuffer);
         cellPxSizeX = width/cellsX;
         cellPxSizeY = height/cellsY;
-        grid.setup();
 
         //Graphics setup
         frame.add(panel);
@@ -84,5 +110,9 @@ public class MazeGame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setVisible(true);
+
+        //Randomized grid
+        grid = mazeGeneration.prims(new Grid(cellsX, cellsY));
+        panel.repaint();
     }
 }
