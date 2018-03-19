@@ -8,8 +8,8 @@ public class MazeGame {
     //It is recommended that width/cellsX == height/cellsY
     int width = 1280;
     int height = 800;
-    int cellsX = 8;
-    int cellsY = 5;
+    int cellsX = 80;
+    int cellsY = 50;
 
     //Non changeable
     final int xBuffer = 1;

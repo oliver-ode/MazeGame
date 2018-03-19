@@ -1,26 +1,38 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class MazeGeneration{
     //Prims generation code
     public Grid prims(Grid grid) {
+        boolean debug = false;
         Grid newGrid = grid;
         Random rand = new Random();
         int[] baseIndex;
         int baseCellObjectIndex;
         ArrayList<Cell> baseCells = new ArrayList<>();
         ArrayList<Cell> travelCells = new ArrayList<>();
-        baseCells.add(newGrid.getGrid()[0][0]);
+        //Randomizes starting cell
+        int y = rand.nextInt(grid.getGrid().length);
+        int x = rand.nextInt(grid.getGrid()[0].length);
+        baseCells.add(newGrid.getGrid()[y][x]);
+        //Fully open up the first cell as it sometimes does not get opened
+        newGrid.getGrid()[0][0].wallDownRemove();
+        newGrid.getGrid()[1][0].wallUpRemove();
+        newGrid.getGrid()[0][0].wallRightRemove();
+        newGrid.getGrid()[0][1].wallLeftRemove();
+        System.out.println(x + ", " + y);
         newGrid.getGrid()[0][0].makeVisited();
         //While there still are cells that we can travel from
         while(baseCells.size() > 0){
+            Collections.shuffle(baseCells);
             baseCellObjectIndex = rand.nextInt(baseCells.size());
             baseIndex = newGrid.getIndex(baseCells.get(baseCellObjectIndex));
             try{
                 //Check right
                 if(!newGrid.getGrid()[baseIndex[0]][baseIndex[1]+1].getVisited() && baseIndex[1] < newGrid.getGrid()[0].length-1){
                     travelCells.add(newGrid.getGrid()[baseIndex[0]][baseIndex[1]+1]);
-                    System.out.print("Right good, ");
+                    if(debug)System.out.print("Right good, ");
                 }
             }
             catch (Exception e){}
@@ -28,7 +40,7 @@ public class MazeGeneration{
                 //Check left
                 if(!newGrid.getGrid()[baseIndex[0]][baseIndex[1]-1].getVisited() && baseIndex[1] > 0){
                     travelCells.add(newGrid.getGrid()[baseIndex[0]][baseIndex[1]-1]);
-                    System.out.print("Left good, ");
+                    if(debug)System.out.print("Left good, ");
                 }
             }
             catch (Exception e){}
@@ -36,7 +48,7 @@ public class MazeGeneration{
                 //Check up
                 if(!newGrid.getGrid()[baseIndex[0]-1][baseIndex[1]].getVisited() && baseIndex[0] > 0){
                     travelCells.add(newGrid.getGrid()[baseIndex[0]-1][baseIndex[1]]);
-                    System.out.print("Up good, ");
+                    if(debug)System.out.print("Up good, ");
                 }
             }
             catch (Exception e){}
@@ -44,12 +56,12 @@ public class MazeGeneration{
                 //Check down
                 if(!newGrid.getGrid()[baseIndex[0]+1][baseIndex[1]].getVisited() && baseIndex[1] < newGrid.getGrid().length-1){
                     travelCells.add(newGrid.getGrid()[baseIndex[0]+1][baseIndex[1]]);
-                    System.out.print("Down good, ");
+                    if(debug)System.out.print("Down good, ");
                 }
             }
             catch (Exception e){}
-            System.out.print("\n");
-            System.out.println(travelCells.size() + " is the size of travelCells!!!");
+            if(debug)System.out.print("\n");
+            if(debug)System.out.println(travelCells.size() + " is the size of travelCells!!!");
             Cell directionCell;
             int[] travelCellIndex;
 
@@ -57,7 +69,7 @@ public class MazeGeneration{
                 directionCell = travelCells.get(rand.nextInt(travelCells.size()));
                 travelCellIndex = newGrid.getIndex(directionCell);
 
-                System.out.println(travelCellIndex[1] + " : " + travelCellIndex[0] + " --> Printed in [x, y]");
+                if(debug)System.out.println(travelCellIndex[1] + " : " + travelCellIndex[0] + " --> Printed in [x, y]");
                 //diff = {yDiff, xDiff} Positive means right and down
                 int[] diff = {baseIndex[0] - travelCellIndex[0], baseIndex[1] - travelCellIndex[1]};
                 newGrid.getGrid()[travelCellIndex[0]][travelCellIndex[1]].makeVisited();
@@ -66,24 +78,24 @@ public class MazeGeneration{
                 if(diff[0] != 0){
                     //Moved down
                     if(diff[0] > 0){
-                        System.out.println("Moved up");
+                        if(debug)System.out.println("Moved up");
                         try{
                             newGrid.getGrid()[baseIndex[0]][baseIndex[1]].wallUpRemove();
                             newGrid.getGrid()[baseIndex[0]-1][baseIndex[1]].wallDownRemove();
                         }
                         catch (Exception e){
-                            System.out.println("NullPointer - You would have been out of bounds!!!");
+                            if(debug)System.out.println("NullPointer - You would have been out of bounds!!!");
                         }
                     }
                     //Moved up
                     else {
-                        System.out.println("Moved down");
+                        if(debug)System.out.println("Moved down");
                         try{
                             newGrid.getGrid()[baseIndex[0]][baseIndex[1]].wallDownRemove();
                             newGrid.getGrid()[baseIndex[0]+1][baseIndex[1]].wallUpRemove();
                         }
                         catch (Exception e){
-                            System.out.println("NullPointer - You would have been out of bounds!!!");
+                            if(debug)System.out.println("NullPointer - You would have been out of bounds!!!");
                         }
                     }
                 }
@@ -91,24 +103,24 @@ public class MazeGeneration{
                 else if (diff[1] != 0){
                     //Moved left
                     if(diff[1] > 0){
-                        System.out.println("Moved left");
+                        if(debug)System.out.println("Moved left");
                         try{
                             newGrid.getGrid()[baseIndex[0]][baseIndex[1]].wallLeftRemove();
                             newGrid.getGrid()[baseIndex[0]][baseIndex[1]-1].wallRightRemove();
                         }
                         catch (Exception e){
-                            System.out.println("NullPointer - You would have been out of bounds!!!");
+                            if(debug)System.out.println("NullPointer - You would have been out of bounds!!!");
                         }
                     }
                     //Moved right
                     else {
-                        System.out.println("Moved right");
+                        if(debug)System.out.println("Moved right");
                         try {
                             newGrid.getGrid()[baseIndex[0]][baseIndex[1]].wallRightRemove();
                             newGrid.getGrid()[baseIndex[0]][baseIndex[1]+1].wallLeftRemove();
                         }
                         catch (Exception e){
-                            System.out.println("NullPointer - You would have been out of bounds!!!");
+                            if(debug)System.out.println("NullPointer - You would have been out of bounds!!!");
                         }
                     }
                 }
@@ -144,7 +156,7 @@ public class MazeGeneration{
                     if(!aOk) baseCells.remove(baseCells.get(i));
                     aOk = false;
                 }
-                System.out.println("----------------------------------------");
+                if(debug)System.out.println("----------------------------------------");
             }
             else{
                 baseCells.remove(newGrid.getGrid()[baseIndex[0]][baseIndex[1]]);
