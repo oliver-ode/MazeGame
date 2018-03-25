@@ -13,16 +13,22 @@ public class MazeGeneration{
         ArrayList<Cell> baseCells = new ArrayList<>();
         ArrayList<Cell> travelCells = new ArrayList<>();
         //Randomizes starting cell
+        /**
         int y = rand.nextInt(grid.getGrid().length);
         int x = rand.nextInt(grid.getGrid()[0].length);
         baseCells.add(newGrid.getGrid()[y][x]);
+        newGrid.getGrid()[y][x].makeVisited();
+         **/
+        //Makes starting cell in middle
+        int y = newGrid.getHeight()/2;
+        int x = newGrid.getWidth()/2;
+        baseCells.add(newGrid.getGrid()[y][x]);
+        newGrid.getGrid()[y][x].makeVisited();
         //Fully open up the first cell as it sometimes does not get opened
         newGrid.getGrid()[0][0].wallDownRemove();
         newGrid.getGrid()[1][0].wallUpRemove();
         newGrid.getGrid()[0][0].wallRightRemove();
         newGrid.getGrid()[0][1].wallLeftRemove();
-        System.out.println(x + ", " + y);
-        newGrid.getGrid()[0][0].makeVisited();
         //While there still are cells that we can travel from
         while(baseCells.size() > 0){
             Collections.shuffle(baseCells);

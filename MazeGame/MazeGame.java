@@ -18,6 +18,7 @@ public class MazeGame {
     int cellPxSizeY;
     Player player = new Player();
     MazeGeneration mazeGeneration = new MazeGeneration();
+    Ball ball = new Ball();
 
     //Random maze generation
     Grid grid = new Grid(cellsX, cellsY);
@@ -104,15 +105,15 @@ public class MazeGame {
         cellPxSizeX = width/cellsX;
         cellPxSizeY = height/cellsY;
 
+        //Randomized grid
+        grid = mazeGeneration.prims(new Grid(cellsX, cellsY));
+        panel.repaint();
+
         //Graphics setup
         frame.add(panel);
         frame.addKeyListener(kl);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setVisible(true);
-
-        //Randomized grid
-        grid = mazeGeneration.prims(new Grid(cellsX, cellsY));
-        panel.repaint();
     }
 }
