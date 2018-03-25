@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b8b5e4b9-7b55-45e1-af32-1d26169ca00d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ICS4U_Project2/MazeGame$1.class" afterPath="$PROJECT_DIR$/out/production/ICS4U_Project2/MazeGame$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ICS4U_Project2/MazeGame$2.class" afterPath="$PROJECT_DIR$/out/production/ICS4U_Project2/MazeGame$2.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ICS4U_Project2/MazeGame.class" afterPath="$PROJECT_DIR$/out/production/ICS4U_Project2/MazeGame.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/ICS4U_Project2/MazeGeneration.class" afterPath="$PROJECT_DIR$/out/production/ICS4U_Project2/MazeGeneration.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MazeGame/MazeGame.java" afterPath="$PROJECT_DIR$/MazeGame/MazeGame.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MazeGame/MazeGeneration.java" afterPath="$PROJECT_DIR$/MazeGame/MazeGeneration.java" />
-    </list>
+    <list default="true" id="b8b5e4b9-7b55-45e1-af32-1d26169ca00d" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -345,7 +337,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18402778" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18402778" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
