@@ -5,6 +5,10 @@ import java.util.Random;
 public class MazeGeneration{
     //Prims generation code
     public Grid prims(Grid grid) {
+        int upMoves = 0;
+        int downMoves = 0;
+        int leftMoves = 0;
+        int rightMoves = 0;
         boolean debug = false;
         Grid newGrid = grid;
         Random rand = new Random();
@@ -18,17 +22,23 @@ public class MazeGeneration{
         int x = rand.nextInt(grid.getGrid()[0].length);
         baseCells.add(newGrid.getGrid()[y][x]);
         newGrid.getGrid()[y][x].makeVisited();
+         newGrid.getGrid()[0][0].wallDownRemove();
+         newGrid.getGrid()[1][0].wallUpRemove();
+         newGrid.getGrid()[0][0].wallRightRemove();
+         newGrid.getGrid()[0][1].wallLeftRemove();
          **/
         //Makes starting cell in middle
+        /**
         int y = newGrid.getHeight()/2;
         int x = newGrid.getWidth()/2;
         baseCells.add(newGrid.getGrid()[y][x]);
         newGrid.getGrid()[y][x].makeVisited();
-        //Fully open up the first cell as it sometimes does not get opened
-        newGrid.getGrid()[0][0].wallDownRemove();
-        newGrid.getGrid()[1][0].wallUpRemove();
-        newGrid.getGrid()[0][0].wallRightRemove();
-        newGrid.getGrid()[0][1].wallLeftRemove();
+         **/
+        //Makes starting cell 0,0
+        ///**
+        baseCells.add(newGrid.getGrid()[grid.getHeight()-1][grid.getWidth()-1]);
+        newGrid.getGrid()[grid.getHeight()-1][grid.getWidth()-1].makeVisited();
+        // **/
         //While there still are cells that we can travel from
         while(baseCells.size() > 0){
             Collections.shuffle(baseCells);
@@ -88,6 +98,7 @@ public class MazeGeneration{
                         try{
                             newGrid.getGrid()[baseIndex[0]][baseIndex[1]].wallUpRemove();
                             newGrid.getGrid()[baseIndex[0]-1][baseIndex[1]].wallDownRemove();
+                            downMoves ++;
                         }
                         catch (Exception e){
                             if(debug)System.out.println("NullPointer - You would have been out of bounds!!!");
@@ -99,6 +110,7 @@ public class MazeGeneration{
                         try{
                             newGrid.getGrid()[baseIndex[0]][baseIndex[1]].wallDownRemove();
                             newGrid.getGrid()[baseIndex[0]+1][baseIndex[1]].wallUpRemove();
+                            upMoves ++;
                         }
                         catch (Exception e){
                             if(debug)System.out.println("NullPointer - You would have been out of bounds!!!");
@@ -113,6 +125,7 @@ public class MazeGeneration{
                         try{
                             newGrid.getGrid()[baseIndex[0]][baseIndex[1]].wallLeftRemove();
                             newGrid.getGrid()[baseIndex[0]][baseIndex[1]-1].wallRightRemove();
+                            leftMoves ++;
                         }
                         catch (Exception e){
                             if(debug)System.out.println("NullPointer - You would have been out of bounds!!!");
@@ -124,6 +137,7 @@ public class MazeGeneration{
                         try {
                             newGrid.getGrid()[baseIndex[0]][baseIndex[1]].wallRightRemove();
                             newGrid.getGrid()[baseIndex[0]][baseIndex[1]+1].wallLeftRemove();
+                            rightMoves ++;
                         }
                         catch (Exception e){
                             if(debug)System.out.println("NullPointer - You would have been out of bounds!!!");
@@ -168,6 +182,12 @@ public class MazeGeneration{
                 baseCells.remove(newGrid.getGrid()[baseIndex[0]][baseIndex[1]]);
             }
 
+        }
+        if(debug) {
+            System.out.println(upMoves);
+            System.out.println(rightMoves);
+            System.out.println(downMoves);
+            System.out.println(leftMoves);
         }
         return newGrid;
     }

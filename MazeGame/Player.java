@@ -19,6 +19,14 @@ public class Player {
         colour = c;
     }
 
+    //Colliders
+    public void collideBall(Ball b, int pxX, int pxY){
+        if((x*pxX<b.getX()+pxX) && (x*pxX+pxX>b.getX()) && (y*pxY<b.getY()+pxY) && (y*pxY+pxY>b.getY())){
+            System.out.println("You lose");
+            System.exit(0);
+        }
+    }
+
     //Getters
     public int getX(){
         return(x);
