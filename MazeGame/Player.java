@@ -20,11 +20,11 @@ public class Player {
     }
 
     //Colliders
-    public void collideBall(Ball b, int pxX, int pxY){
+    public boolean collideBall(Ball b, int pxX, int pxY, int score){
         if((x*pxX<b.getX()+pxX) && (x*pxX+pxX>b.getX()) && (y*pxY<b.getY()+pxY) && (y*pxY+pxY>b.getY())){
-            System.out.println("You lose");
-            System.exit(0);
+            return(true);
         }
+        return(false);
     }
 
     //Getters

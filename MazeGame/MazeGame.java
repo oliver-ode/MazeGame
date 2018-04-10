@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class MazeGame {
@@ -17,10 +18,8 @@ public class MazeGame {
     int cellsX = 800;
     int cellsY = 500;
 
-    final int baseBallSpeed = 2;
-    boolean gameEnded = false;
+    boolean gameEnded = true;
 
-    //Non changeable
     final int xBuffer = 1;
     final int yBuffer = 23;
     int cellPxSizeX;
@@ -29,15 +28,16 @@ public class MazeGame {
     Player player = new Player(0, 0, Color.RED);
     MazeGeneration mazeGeneration = new MazeGeneration();
     Random rand = new Random();
-    Ball ball = new Ball(Color.MAGENTA, 600, 400, baseBallSpeed, baseBallSpeed);
+    ArrayList<Ball> balls = new ArrayList<>();
 
     int radX;
     int radY;
     boolean radioPickedUp = false;
 
+    int startStage = 1;
+
     Clip clip = AudioSystem.getClip();
 
-    //Random maze generation
     Grid grid = new Grid(cellsX, cellsY);
     private JFrame frame = new JFrame();
     private JPanel panel = new JPanel(){
@@ -46,45 +46,70 @@ public class MazeGame {
             Graphics2D g2 = (Graphics2D)g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            g2.setColor(Color.LIGHT_GRAY);
-            g2.fillRect(0, 0, width, height);
-
-            //Drawing player
-            g2.setColor(player.getColour());
-            g2.fillRect(player.getX()*cellPxSizeX, player.getY()*cellPxSizeY, cellPxSizeX, cellPxSizeY);
-
-            //Drawing radio
-            if(!radioPickedUp){
-                g2.setColor(Color.ORANGE);
-                g2.fillRect(radX*cellPxSizeX, radY*cellPxSizeY, cellPxSizeX, cellPxSizeY);
+            //Instructions
+            if(startStage == 1 && level == 1){
+                //Welcome
+                g2.drawString("Welcome to my Maze Game", width/2, height/2-100);
+                //Basic overview
+                g2.drawString("The goal of the game is to get from the top left to the bottom right", width/2, height/2-50);
+                g2.drawString("If you can do that you progress to the next level (which is harder)", width/2, height/2);
+                g2.drawString("You also have to pick up a radio on the way which is yellow", width/2, height/2+50);
+                g2.drawString("Make sure not to get hit by the balls though!", width/2, height/2+100);
+                g2.drawString("Click enter to start", width/2, height/2+150);
+                //Ending
+                g2.drawString("Have fun!!", width/2, height/2+200);
             }
+            //End
+            if(startStage == 3){
+                g2.drawString("Game over", width/2, height/2-25);
+                g2.drawString("You got to level: " + level, width/2, height/2+25);
+            }
+            //Game
+            if(startStage == 2){
+                g2.setColor(Color.LIGHT_GRAY);
+                g2.fillRect(0, 0, width, height);
 
-            //Drawing ball
-            g2.setColor(ball.getColour());
-            g2.fillOval(ball.getX(), ball.getY(), cellPxSizeX, cellPxSizeY);
+                //Drawing player
+                g2.setColor(player.getColour());
+                g2.fillRect(player.getX()*cellPxSizeX, player.getY()*cellPxSizeY, cellPxSizeX, cellPxSizeY);
 
-            //Drawing grid
-            g2.setColor(Color.BLUE);
-            for(int y = 0; y < grid.getHeight(); y++){
-                for(int x = 0; x < grid.getWidth(); x++){
-                    //Upper line
-                    if(grid.getGrid()[y][x].getWallUp()){
-                        g2.drawLine(x*cellPxSizeX, y*cellPxSizeY, x*cellPxSizeX+cellPxSizeX, y*cellPxSizeY);
-                    }
-                    //Bottom line
-                    if(grid.getGrid()[y][x].getWallDown()){
-                        g2.drawLine(x*cellPxSizeX, y*cellPxSizeY+cellPxSizeY, x*cellPxSizeX+cellPxSizeX, y*cellPxSizeY+cellPxSizeY);
-                    }
-                    //Left line
-                    if(grid.getGrid()[y][x].getWallLeft()){
-                        g2.drawLine(x*cellPxSizeX, y*cellPxSizeY, x*cellPxSizeX, y*cellPxSizeY+cellPxSizeY);
-                    }
-                    //Right line
-                    if(grid.getGrid()[y][x].getWallRight()){
-                        g2.drawLine(x*cellPxSizeX+cellPxSizeX, y*cellPxSizeY, x*cellPxSizeX+cellPxSizeX, y*cellPxSizeY+cellPxSizeY);
+                //Drawing radio
+                if(!radioPickedUp){
+                    g2.setColor(Color.yellow);
+                    g2.fillRect(radX*cellPxSizeX, radY*cellPxSizeY, cellPxSizeX, cellPxSizeY);
+                }
+
+                //Drawing ball
+                for(int i = 0; i < balls.size(); i++){
+                    g2.setColor(balls.get(i).getColour());
+                    g2.fillOval(balls.get(i).getX(), balls.get(i).getY(), cellPxSizeX, cellPxSizeY);
+                }
+
+                //Drawing grid
+                g2.setColor(Color.BLUE);
+                for(int y = 0; y < grid.getHeight(); y++){
+                    for(int x = 0; x < grid.getWidth(); x++){
+                        //Upper line
+                        if(grid.getGrid()[y][x].getWallUp()){
+                            g2.drawLine(x*cellPxSizeX, y*cellPxSizeY, x*cellPxSizeX+cellPxSizeX, y*cellPxSizeY);
+                        }
+                        //Bottom line
+                        if(grid.getGrid()[y][x].getWallDown()){
+                            g2.drawLine(x*cellPxSizeX, y*cellPxSizeY+cellPxSizeY, x*cellPxSizeX+cellPxSizeX, y*cellPxSizeY+cellPxSizeY);
+                        }
+                        //Left line
+                        if(grid.getGrid()[y][x].getWallLeft()){
+                            g2.drawLine(x*cellPxSizeX, y*cellPxSizeY, x*cellPxSizeX, y*cellPxSizeY+cellPxSizeY);
+                        }
+                        //Right line
+                        if(grid.getGrid()[y][x].getWallRight()){
+                            g2.drawLine(x*cellPxSizeX+cellPxSizeX, y*cellPxSizeY, x*cellPxSizeX+cellPxSizeX, y*cellPxSizeY+cellPxSizeY);
+                        }
                     }
                 }
             }
+
+
         }
     };
     //Volume code
@@ -103,7 +128,7 @@ public class MazeGame {
             double partDistance = Math.sqrt(xDistance + yDistance);
             gain = partDistance/totalDistance;
             gain = 1-gain;
-            //The volume can never go lower than 10%%
+            //The volume can never go lower than 10%
             gain /= 10;
             gain *= 9;
             gain += 0.1;
@@ -115,6 +140,10 @@ public class MazeGame {
     private KeyListener kl = new KeyListener() {
         @Override
         public void keyTyped(KeyEvent e) {
+            if (e.getKeyChar() == KeyEvent.VK_ENTER && startStage == 1){
+                gameEnded = false;
+                startStage = 2;
+            }
             if (e.getKeyChar() == KeyEvent.VK_W && !grid.getGrid()[player.getY()][player.getX()].getWallUp()) {
                 player.setY(player.getY()-1);
             }
@@ -149,7 +178,9 @@ public class MazeGame {
                 //Player won
                 try{
                     gameEnded = true;
-                    ball.setY(-10000);
+                    for(int i = 0; i < level; i++){
+                        balls.get(i).setY(-10000);
+                    }
                     player.setX(0);
                     level += 1;
                     clip.stop();
@@ -169,8 +200,17 @@ public class MazeGame {
     ActionListener ballUpdate = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(gameEnded == false) ball.updateBallPos(width, height, cellPxSizeX, cellPxSizeY);
-            player.collideBall(ball, cellPxSizeX, cellPxSizeY);
+            if(gameEnded == false){
+                for(int i = 0; i < level; i++){
+                    balls.get(i).updateBallPos(width, height, cellPxSizeX, cellPxSizeY);
+                }
+            }
+            for(int i = 0; i < balls.size(); i++){
+                if(player.collideBall(balls.get(i), cellPxSizeX, cellPxSizeY, level)){
+                    startStage = 3;
+                    gameEnded = true;
+                }
+            }
             panel.repaint();
         }
     };
@@ -181,9 +221,23 @@ public class MazeGame {
         cellsX = cX;
         cellsY = cY;
         level = lvScalar;
-        ball.setXVel(baseBallSpeed*level);
-        ball.setYVel(baseBallSpeed*level);
+        if(level != 1){
+            startStage = 2;
+            gameEnded = false;
+        }
 
+        for(int i = 0; i < level; i++){
+            int baseBallSpeed = rand.nextInt(3);
+            balls.add(new Ball(Color.MAGENTA, 600, 400, baseBallSpeed, baseBallSpeed));
+            balls.get(i).setXVel(baseBallSpeed*level);
+            balls.get(i).setYVel(baseBallSpeed*level);
+            balls.get(i).setX(cellPxSizeX+rand.nextInt(width-(cellPxSizeX*2))-150);
+            balls.get(i).setY(cellPxSizeY+rand.nextInt(height-(cellPxSizeY*2))-150);
+            int chance = rand.nextInt(101);
+            if(chance % 2 == 1)balls.get(i).setXVel(balls.get(i).getXVel()*-1);
+            chance = rand.nextInt(101);
+            if(chance % 2 == 1)balls.get(i).setYVel(balls.get(i).getYVel()*-1);
+        }
         do{
             radX = rand.nextInt(cellsX);
             radY = rand.nextInt(cellsY);
@@ -193,14 +247,6 @@ public class MazeGame {
         frame.setSize(width+xBuffer, height+yBuffer);
         cellPxSizeX = width/cellsX;
         cellPxSizeY = height/cellsY;
-
-        ball.setX(cellPxSizeX+rand.nextInt(width-(cellPxSizeX*2)));
-        ball.setY(cellPxSizeY+rand.nextInt(height-(cellPxSizeY*2)));
-
-        int chance = rand.nextInt(101);
-        if(chance % 2 == 1)ball.setXVel(ball.getXVel()*-1);
-        chance = rand.nextInt(101);
-        if(chance % 2 == 1)ball.setYVel(ball.getYVel()*-1);
 
         //Randomized grid
         grid = mazeGeneration.prims(new Grid(cellsX, cellsY));
