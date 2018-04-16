@@ -13,40 +13,53 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class MazeGame {
+    //Screen dimenesions
     int width = 1280;
     int height = 800;
-    int cellsX = 800;
-    int cellsY = 500;
-
+    //Number of cells
+    int cellsX = 8;
+    int cellsY = 5;
+    //If the game has ended (will freeze game if true)
     boolean gameEnded = true;
-
+    //Screen buffer
     final int xBuffer = 1;
     final int yBuffer = 23;
+    //Variables that store the px size for the cells
     int cellPxSizeX;
     int cellPxSizeY;
+    //Game level
     int level;
+    //Player object
     Player player = new Player(0, 0, Color.RED);
+    //Maze Generation class object
     MazeGeneration mazeGeneration = new MazeGeneration();
+    //Random object
     Random rand = new Random();
+    //Array list of balls
     ArrayList<Ball> balls = new ArrayList<>();
-
+    //Radio x and y position
     int radX;
     int radY;
+    //If the radio has been picked up
     boolean radioPickedUp = false;
-
+    //What stage in the startup the program is in
+    //1 --> Instructions
+    //2 --> Game
+    //3 --> Game over
     int startStage = 1;
-
+    //Clip system for audio playing
     Clip clip = AudioSystem.getClip();
-
+    //2D grid
     Grid grid = new Grid(cellsX, cellsY);
+    //Frame
     private JFrame frame = new JFrame();
+    //Panel
     private JPanel panel = new JPanel(){
         public void paint(Graphics g){
             //Setup
             Graphics2D g2 = (Graphics2D)g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            //Instructions
+            //Instruction stage
             if(startStage == 1 && level == 1){
                 //Welcome
                 g2.drawString("Welcome to my Maze Game", width/2, height/2-100);
@@ -59,12 +72,12 @@ public class MazeGame {
                 //Ending
                 g2.drawString("Have fun!!", width/2, height/2+200);
             }
-            //End
+            //End stage
             if(startStage == 3){
                 g2.drawString("Game over", width/2, height/2-25);
                 g2.drawString("You got to level: " + level, width/2, height/2+25);
             }
-            //Game
+            //Game stage
             if(startStage == 2){
                 g2.setColor(Color.LIGHT_GRAY);
                 g2.fillRect(0, 0, width, height);
@@ -108,15 +121,15 @@ public class MazeGame {
                     }
                 }
             }
-
-
         }
     };
     //Volume code
     public void setVolume() {
+        //FloatControl for setting volume
         FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-
+        //Base volume is 100%
         double gain = 1;
+        //If the player has not picked up the radio
         if(!radioPickedUp){
             int totalXDistance = (cellsX-1)*(cellsX-1);
             int totalYDistance = (cellsY-1)*(cellsY-1);
@@ -133,30 +146,35 @@ public class MazeGame {
             gain *= 9;
             gain += 0.1;
         }
-
+        //Set the volume
         float dB = (float) (Math.log(gain) / Math.log(10.0) * 20.0);
         gainControl.setValue(dB);
     }
     private KeyListener kl = new KeyListener() {
         @Override
         public void keyTyped(KeyEvent e) {
+            //Listen for the start key (enter)
             if (e.getKeyChar() == KeyEvent.VK_ENTER && startStage == 1){
                 gameEnded = false;
                 startStage = 2;
             }
+            //Up movement
             if (e.getKeyChar() == KeyEvent.VK_W && !grid.getGrid()[player.getY()][player.getX()].getWallUp()) {
                 player.setY(player.getY()-1);
             }
+            //Right movement
             if (e.getKeyChar() == KeyEvent.VK_D && !grid.getGrid()[player.getY()][player.getX()].getWallRight()) {
                 player.setX(player.getX()+1);
             }
+            //Down movement
             if (e.getKeyChar() == KeyEvent.VK_S && !grid.getGrid()[player.getY()][player.getX()].getWallDown()) {
                 player.setY(player.getY()+1);
             }
+            //Left movement
             if (e.getKeyChar() == KeyEvent.VK_A && !grid.getGrid()[player.getY()][player.getX()].getWallLeft()) {
                 player.setX(player.getX()-1);
             }
-            //Radio
+            //Radio movement
             if (e.getKeyChar() == KeyEvent.VK_I && !grid.getGrid()[radY][radX].getWallUp()){
                 radY -= 1;
             }
@@ -169,11 +187,11 @@ public class MazeGame {
             if (e.getKeyChar() == KeyEvent.VK_J && !grid.getGrid()[radY][radX].getWallLeft()){
                 radX -= 1;
             }
-            if (e.getKeyChar() == KeyEvent.VK_SPACE){
-                //
-            }
+            //Runs volume code after every key press
             setVolume();
+            //Redraw
             panel.repaint();
+            //Player winning --> new maze
             if(player.getX() == grid.getWidth()-1 && player.getY() == grid.getHeight()-1 && radioPickedUp){
                 //Player won
                 try{
@@ -187,9 +205,11 @@ public class MazeGame {
                     MazeGame mg = new MazeGame(1280, 800, 8*level, 5*level, level);
                 }
                 catch (Exception f){
+                    //Something really bad happened
                     System.exit(-1);
                 }
             }
+            //Player picked up radio
             if(player.getX() == radX && player.getY() == radY){
                 radioPickedUp = true;
             }
@@ -200,39 +220,45 @@ public class MazeGame {
     ActionListener ballUpdate = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            //Update balls if game has not ended
             if(gameEnded == false){
-                for(int i = 0; i < level; i++){
+                for(int i = 0; i < balls.size(); i++){
                     balls.get(i).updateBallPos(width, height, cellPxSizeX, cellPxSizeY);
                 }
             }
+            //Check for collisions
             for(int i = 0; i < balls.size(); i++){
                 if(player.collideBall(balls.get(i), cellPxSizeX, cellPxSizeY, level)){
                     startStage = 3;
                     gameEnded = true;
                 }
             }
+            //Repaint the panel
             panel.repaint();
         }
     };
 
     public MazeGame(int w, int h, int cX, int cY, int lvScalar) throws LineUnavailableException{
+        //Game dimensions
         width = w;
         height = h;
         cellsX = cX;
         cellsY = cY;
+        //Level
         level = lvScalar;
+        //Bypass instructions if the player is not on level 1
         if(level != 1){
             startStage = 2;
             gameEnded = false;
         }
-
+        //Generate balls
         for(int i = 0; i < level; i++){
-            int baseBallSpeed = rand.nextInt(3);
+            int baseBallSpeed = rand.nextInt(3)+1;
             balls.add(new Ball(Color.MAGENTA, 600, 400, baseBallSpeed, baseBallSpeed));
             balls.get(i).setXVel(baseBallSpeed*level);
             balls.get(i).setYVel(baseBallSpeed*level);
-            balls.get(i).setX(cellPxSizeX+rand.nextInt(width-(cellPxSizeX*2))-150);
-            balls.get(i).setY(cellPxSizeY+rand.nextInt(height-(cellPxSizeY*2))-150);
+            balls.get(i).setX(100+rand.nextInt(width-200));
+            balls.get(i).setY(100+rand.nextInt(height-200));
             int chance = rand.nextInt(101);
             if(chance % 2 == 1)balls.get(i).setXVel(balls.get(i).getXVel()*-1);
             chance = rand.nextInt(101);

@@ -4,6 +4,12 @@ import java.util.Random;
 
 public class MazeGeneration{
     //Prims generation code
+
+    /**
+     * Generates a random grid. I am never going to comment the class so yeah...
+     * @param grid
+     * @return
+     */
     public Grid prims(Grid grid) {
         int upMoves = 0;
         int downMoves = 0;
